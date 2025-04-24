@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-33611c3b7156f82ee523.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "kurs",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "kurs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kurs-Debug-381efc2897b37cdd78d6.json",
+					"name" : "kurs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "kurs_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kurs_autogen-Debug-29eb5dd4392b853849eb.json",
+					"name" : "kurs_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "kurs_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kurs_autogen_timestamp_deps-Debug-00003598a3030134f3b6.json",
+					"name" : "kurs_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Debug",
+		"source" : "C:/Users/1/Desktop/kurs/kurs"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
