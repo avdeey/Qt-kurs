@@ -32,6 +32,8 @@ private slots:
     void addCategory();
     void deleteCategory();
     void changeCategory(const QString &category);
+    void loadFromJson();
+    void saveToJson();
 
 
 private:
@@ -45,6 +47,10 @@ private:
     QPushButton *addCategoryButton;
     QPushButton *deleteCategoryButton;
     QComboBox *categoryBox;
+    QComboBox *emojiBox;
+    QPushButton *colorButton;
+    QPushButton *resetColorButton;
+
 
 
     QMap<QString, QVector<Note>> categorizedNotes; // Категория -> список заметок

@@ -13,9 +13,11 @@
 #include <QDateTime>
 #include <QToolButton>
 #include <QStyle>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <algorithm>
 
-// Функция сортировки по дате
 bool noteDateDescending(const MainWindow::Note &a, const MainWindow::Note &b) {
     return a.date > b.date;
 }
@@ -38,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     leftLayout->setSpacing(10);
 
     QLabel *categoriesLabel = new QLabel("CATEGORIES");
-    categoriesLabel->setStyleSheet("font-weight: bold; color: #5D5D5D; font-size: 14px;");
+    categoriesLabel->setStyleSheet("font-weight: bold; color: #455A64; font-size: 14px;");
 
     categoryBox = new QComboBox(this);
     categoryBox->setMinimumHeight(35);
@@ -46,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent)
     addCategoryButton = new QPushButton("Add Category");
     deleteCategoryButton = new QPushButton("Delete Category");
 
-    // Установка иконок для кнопок
     addCategoryButton->setIcon(QIcon(":/icons/add.png"));
     deleteCategoryButton->setIcon(QIcon(":/icons/delete.png"));
 
@@ -60,12 +61,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(deleteCategoryButton, &QPushButton::clicked, this, &MainWindow::deleteCategory);
     connect(categoryBox, &QComboBox::currentTextChanged, this, &MainWindow::changeCategory);
 
-
+    // Центральная колонка — заметки
     QVBoxLayout *centerLayout = new QVBoxLayout;
     centerLayout->setSpacing(10);
 
     QLabel *notesLabel = new QLabel("NOTES");
-    notesLabel->setStyleSheet("font-weight: bold; color: #5D5D5D; font-size: 14px;");
+    notesLabel->setStyleSheet("font-weight: bold; color: #455A64; font-size: 14px;");
 
     noteList = new QListWidget(this);
     noteList->setFrameShape(QFrame::NoFrame);
@@ -75,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent)
     deleteNoteButton = new QPushButton("Delete");
     saveCSVButton = new QPushButton("Export");
 
-    // Установка иконок для кнопок
     deleteNoteButton->setIcon(QIcon(":/icons/delete.png"));
     saveCSVButton->setIcon(QIcon(":/icons/save.png"));
 
@@ -91,12 +91,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(deleteNoteButton, &QPushButton::clicked, this, &MainWindow::deleteNote);
     connect(saveCSVButton, &QPushButton::clicked, this, &MainWindow::saveToCSV);
 
-    // Правая колонка — поля редактирования
+    // Правая колонка — редактор
     QVBoxLayout *rightLayout = new QVBoxLayout;
     rightLayout->setSpacing(15);
 
     QLabel *editorLabel = new QLabel("EDITOR");
-    editorLabel->setStyleSheet("font-weight: bold; color: #5D5D5D; font-size: 14px;");
+    editorLabel->setStyleSheet("font-weight: bold; color: #455A64; font-size: 14px;");
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->setVerticalSpacing(15);
@@ -135,83 +135,80 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("Personal Journal");
     resize(900, 600);
 
-
-
+    // Новый стиль
     QString styleSheet = R"(
         QWidget {
-            background-color: #F5F5F5;
+            background-color: #ECEFF1;
             font-family: 'Roboto';
-            color: black;
+            color: #37474F;
         }
 
         QComboBox, QLineEdit, QDateEdit, QPlainTextEdit {
             background-color: white;
-            border: 1px solid #D3D3D3;
-            border-radius: 4px;
+            border: 1px solid #B0BEC5;
+            border-radius: 5px;
             padding: 5px;
             font-size: 14px;
-            color: black;
-        }
-
-        QPlainTextEdit {
-            min-height: 200px;
         }
 
         QPushButton {
-            background-color: #FF69B4;
+            background-color: #546E7A;
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 8px 15px;
+            border-radius: 5px;
+            padding: 8px 16px;
             font-size: 14px;
         }
 
         QPushButton:hover {
-            background-color: #E55A9D;
+            background-color: #455A64;
         }
 
         QPushButton:pressed {
-            background-color: #CC4B86;
+            background-color: #37474F;
         }
 
         QListWidget {
             background-color: white;
-            border: 1px solid #D3D3D3;
-            border-radius: 4px;
+            border: 1px solid #B0BEC5;
+            border-radius: 5px;
             font-size: 14px;
         }
 
         QListWidget::item {
             padding: 8px;
-            border-bottom: 1px solid #F0F0F0;
+            border-bottom: 1px solid #CFD8DC;
         }
 
         QListWidget::item:hover {
-            background-color: #FFE6F0;
+            background-color: #CFD8DC;
         }
 
         QListWidget::item:selected {
-            background-color: #FF69B4;
+            background-color: #546E7A;
             color: white;
         }
 
         QLabel {
-            color: #5D5D5D;
+            font-weight: bold;
+            color: #455A64;
             font-size: 14px;
         }
     )";
-
     setStyleSheet(styleSheet);
 
+    // Загрузка заметок
+    loadFromJson();
 
-    categoryBox->addItem("Общее");
-    categorizedNotes["Общее"] = {};
-    changeCategory("Общее");
+    if (!categorizedNotes.contains("Общее")) {
+        categoryBox->addItem("Общее");
+        categorizedNotes["Общее"] = {};
+    }
+    changeCategory(categoryBox->currentText());
 
     QFont font("Roboto", 10);
     this->setFont(font);
 }
-
 
 MainWindow::~MainWindow() {}
 
@@ -238,7 +235,10 @@ void MainWindow::addNewNote()
 
     std::sort(categorizedNotes[currentCategory].begin(), categorizedNotes[currentCategory].end(), noteDateDescending);
     refreshNoteList();
+    saveToJson();
 
+    // Очистка полей после сохранения
+    noteList->setCurrentRow(-1);
     noteTitle->clear();
     noteText->clear();
     dateEdit->setDate(QDate::currentDate());
@@ -247,8 +247,7 @@ void MainWindow::addNewNote()
 void MainWindow::saveToCSV()
 {
     int index = noteList->currentRow();
-
-QString currentCategory = categoryBox->currentText();
+    QString currentCategory = categoryBox->currentText();
 
     if (index < 0 || index >= categorizedNotes[currentCategory].size()) {
         QMessageBox::warning(this, "Warning", "Please select a note to export.");
@@ -300,6 +299,7 @@ void MainWindow::deleteNote()
     if (index >= 0 && index < categorizedNotes[currentCategory].size()) {
         categorizedNotes[currentCategory].removeAt(index);
         refreshNoteList();
+        saveToJson();
         noteTitle->clear();
         noteText->clear();
         dateEdit->setDate(QDate::currentDate());
@@ -313,6 +313,7 @@ void MainWindow::addCategory()
     if (ok && !category.isEmpty() && !categorizedNotes.contains(category)) {
         categoryBox->addItem(category);
         categorizedNotes[category] = {};
+        saveToJson();
     }
 }
 
@@ -328,6 +329,7 @@ void MainWindow::deleteCategory()
         categorizedNotes.remove(currentCategory);
         categoryBox->removeItem(categoryBox->currentIndex());
         changeCategory(categoryBox->currentText());
+        saveToJson();
     }
 }
 
@@ -345,5 +347,56 @@ void MainWindow::refreshNoteList()
     QString currentCategory = categoryBox->currentText();
     for (const Note &note : categorizedNotes[currentCategory]) {
         noteList->addItem(note.title);
+    }
+}
+
+void MainWindow::saveToJson()
+{
+    QJsonObject root;
+    for (auto it = categorizedNotes.begin(); it != categorizedNotes.end(); ++it) {
+        QJsonArray notesArray;
+        for (const Note &note : it.value()) {
+            QJsonObject noteObject;
+            noteObject["title"] = note.title;
+            noteObject["date"] = note.date;
+            noteObject["text"] = note.text;
+            notesArray.append(noteObject);
+        }
+        root[it.key()] = notesArray;
+    }
+
+    QJsonDocument doc(root);
+    QFile file("notes.json");
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(doc.toJson());
+        file.close();
+    }
+}
+
+void MainWindow::loadFromJson()
+{
+    QFile file("notes.json");
+    if (!file.exists()) return;
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray data = file.readAll();
+        file.close();
+
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (doc.isObject()) {
+            QJsonObject root = doc.object();
+            for (const QString &category : root.keys()) {
+                QJsonArray notesArray = root[category].toArray();
+                QVector<Note> notes;
+                for (const QJsonValue &val : notesArray) {
+                    QJsonObject obj = val.toObject();
+                    notes.append({obj["title"].toString(), obj["date"].toString(), obj["text"].toString()});
+                }
+                categorizedNotes[category] = notes;
+                if (categoryBox->findText(category) == -1) {
+                    categoryBox->addItem(category);
+                }
+            }
+        }
     }
 }
