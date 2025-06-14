@@ -6,33 +6,271 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1025</width>
-    <height>634</height>
+    <width>900</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(84, 84, 84);</string>
+   <string>Diary App</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="dateLabel">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>50</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
+   <property name="styleSheet">
+    <string notr="true">
+QWidget {
+ background-color: white;
+ color: #333333;
+ font-family: 'Segoe UI', 'Arial';
+ font-size: 14px;
+}
+
+QLineEdit, QPlainTextEdit, QDateEdit, QComboBox {
+ background-color: white;
+ border: 1px solid #cccccc;
+ border-radius: 6px;
+ padding: 6px;
+ color: #333333;
+}
+
+QPushButton, QToolButton {
+ background: transparent;
+ border: none;
+ padding: 5px;
+ margin: 1px;
+}
+
+QPushButton:hover, QToolButton:hover {
+ background: rgba(240, 240, 240, 50);
+}
+
+QPushButton:pressed, QToolButton:pressed {
+ background: rgba(224, 224, 224, 70);
+}
+
+QToolButton {
+ border: 1px solid #ccc;
+ border-radius: 4px;
+}
+
+QToolButton:hover {
+ border-color: #aaa;
+}
+
+QToolButton#emojiButton {
+ border: none !important;
+ margin: 0;
+ padding: 0;
+}
+
+QToolButton#sortButton {
+ border: none;
+}
+
+QListWidget {
+ background-color: white;
+ border: 1px solid #cccccc;
+ border-radius: 6px;
+}
+
+QListWidget::item:selected {
+ background-color: #4a90e2;
+ color: #ffffff;
+}
+
+QComboBox {
+ background-color: white;
+ padding: 6px;
+ color: #333333;
+}
+
+QComboBox QAbstractItemView {
+ background-color: white;
+ selection-background-color: #4a90e2;
+ selection-color: #ffffff;
+}
+
+QToolButton#insertImageButton {
+ background: transparent;
+}
+
+QToolButton#colorButton {
+}
+
+QToolButton#emojiButton::menu-indicator {
+ image: none;
+}
+    </string>
+   </property>
+   <layout class="QHBoxLayout" name="mainLayout">
+    <item>
+     <layout class="QVBoxLayout" name="leftLayout">
+      <item>
+       <widget class="QComboBox" name="categoryBox"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addCategoryButton">
+        <property name="text">
+         <string>Добавить категорию</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deleteCategoryButton">
+        <property name="text">
+         <string>Удалить категорию</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListView" name="noteListView"/>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="actionButtonsLayout">
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Отменить выбор</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteNoteButton">
+          <property name="text">
+           <string>Удалить</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="recentlyDeletedButton">
+          <property name="text">
+           <string>Недавно удаленные</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="sortButton">
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/icons/sort-up.png</normaloff>
+            <selectedoff>:/icons/sort-down.png</selectedoff>:/icons/sort-up.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="rightLayout">
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelTitle">
+          <property name="text">
+           <string>Название:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="noteTitle"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelDate">
+          <property name="text">
+           <string>Дата:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QTextEdit" name="noteText"/>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <item>
+           <widget class="QToolButton" name="emojiButton"/>
+          </item>
+          <item>
+           <widget class="QToolButton" name="insertImageButton">
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/fajly_uwww2eho71zx_512.png</normaloff>:/icons/fajly_uwww2eho71zx_512.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="colorButton">
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/tsvet_1k4om45p2hvi_512.png</normaloff>:/icons/tsvet_1k4om45p2hvi_512.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="boldButton">
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/b_ia6b40coq1vo_512.png</normaloff>:/icons/b_ia6b40coq1vo_512.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="italicButton">
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/letter_i_4pqtn0a404ow_512.png</normaloff>:/icons/letter_i_4pqtn0a404ow_512.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDateEdit" name="dateEdit">
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="saveNoteButton">
+        <property name="text">
+         <string>Сохранить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="resetColorButton">
+        <property name="text">
+         <string>Сбросить цвет</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="exportOdtButton">
+        <property name="text">
+         <string>Экспортировать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

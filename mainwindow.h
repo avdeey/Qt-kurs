@@ -2,15 +2,17 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QLabel>
-#include <QPlainTextEdit>
-#include <QListWidget>
-#include <QDateEdit>
+#include <QStandardItemModel>
 #include <QVector>
-#include <QComboBox>
+#include "NoteManager.h"
+#include "RecentlyDeletedManager.h"
 
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
+
+class QListWidgetItem;
+class NoteItemDelegate;
 
 class MainWindow : public QMainWindow
 {
@@ -19,42 +21,32 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    struct Note {
-        QString title;
-        QString date;
-        QString text;
-    };
+
 private slots:
-    void addNewNote();
-    void saveToCSV();
-    void loadNoteForEdit(QListWidgetItem *item);
+    void saveNote();
     void deleteNote();
     void addCategory();
     void deleteCategory();
     void changeCategory(const QString &category);
-    void loadFromJson();
-    void saveToJson();
-
+    void sortNotes();
+    void changeTextColor();
+    void resetTextColor();
+    void insertImage();
+    void insertEmoji(const QString &emoji);
+    void exportNoteToOdt();
+    void loadNoteForEdit(const QModelIndex &index);
+    void restoreNoteToOriginalPosition(const QString &category, const Note &note);
 
 private:
-    QLineEdit *noteTitle;
-    QDateEdit *dateEdit;
-    QPlainTextEdit *noteText;
-    QListWidget *noteList;
-    QPushButton *addNewNoteButton;
-    QPushButton *saveCSVButton;
-    QPushButton *deleteNoteButton;
-    QPushButton *addCategoryButton;
-    QPushButton *deleteCategoryButton;
-    QComboBox *categoryBox;
-    QComboBox *emojiBox;
-    QPushButton *colorButton;
-    QPushButton *resetColorButton;
-
-
-
-    QMap<QString, QVector<Note>> categorizedNotes; // Категория -> список заметок
     void refreshNoteList();
+    void clearForm();
+
+    Ui::MainWindow *ui;
+    QStandardItemModel *model;
+    NoteManager manager;
+    RecentlyDeletedManager deletedManager;
+    QVector<int> visibleNoteIndexes;
+    class RecentlyDeletedWindow *deletedWindow = nullptr;
 };
 
 #endif // MAINWINDOW_H

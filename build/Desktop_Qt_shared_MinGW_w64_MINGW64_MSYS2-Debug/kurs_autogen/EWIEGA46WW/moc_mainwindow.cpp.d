@@ -189,6 +189,7 @@ C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debu
   C:/msys64/mingw64/include/pthread_time.h \
   C:/msys64/mingw64/include/pthread_unistd.h \
   C:/msys64/mingw64/include/qt6/QtCore/QList \
+  C:/msys64/mingw64/include/qt6/QtCore/QMap \
   C:/msys64/mingw64/include/qt6/QtCore/QObject \
   C:/msys64/mingw64/include/qt6/QtCore/QRect \
   C:/msys64/mingw64/include/qt6/QtCore/QSize \
@@ -331,6 +332,7 @@ C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debu
   C:/msys64/mingw64/include/qt6/QtCore/qversiontagging.h \
   C:/msys64/mingw64/include/qt6/QtCore/qxptype_traits.h \
   C:/msys64/mingw64/include/qt6/QtCore/qyieldcpu.h \
+  C:/msys64/mingw64/include/qt6/QtGui/QTextCharFormat \
   C:/msys64/mingw64/include/qt6/QtGui/QTransform \
   C:/msys64/mingw64/include/qt6/QtGui/qabstracttextdocumentlayout.h \
   C:/msys64/mingw64/include/qt6/QtGui/qaction.h \

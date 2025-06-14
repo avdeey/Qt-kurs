@@ -39,19 +39,23 @@ struct qt_meta_tag_ZN10MainWindowE_t {};
 #ifdef QT_MOC_HAS_STRINGDATA
 static constexpr auto qt_meta_stringdata_ZN10MainWindowE = QtMocHelpers::stringData(
     "MainWindow",
-    "addNewNote",
+    "saveNote",
     "",
-    "saveToCSV",
-    "loadNoteForEdit",
-    "QListWidgetItem*",
-    "item",
+    "clearForm",
+    "sortNotes",
     "deleteNote",
     "addCategory",
     "deleteCategory",
     "changeCategory",
     "category",
+    "refreshNoteList",
     "loadFromJson",
-    "saveToJson"
+    "saveToJson",
+    "changeTextColor",
+    "loadNoteForEdit",
+    "QListWidgetItem*",
+    "item",
+    "exportNoteToDocx"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -63,7 +67,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN10MainWindowE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -71,25 +75,33 @@ Q_CONSTINIT static const uint qt_meta_data_ZN10MainWindowE[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   68,    2, 0x08,    1 /* Private */,
-       3,    0,   69,    2, 0x08,    2 /* Private */,
-       4,    1,   70,    2, 0x08,    3 /* Private */,
-       7,    0,   73,    2, 0x08,    5 /* Private */,
-       8,    0,   74,    2, 0x08,    6 /* Private */,
-       9,    0,   75,    2, 0x08,    7 /* Private */,
-      10,    1,   76,    2, 0x08,    8 /* Private */,
-      12,    0,   79,    2, 0x08,   10 /* Private */,
-      13,    0,   80,    2, 0x08,   11 /* Private */,
+       1,    0,   92,    2, 0x08,    1 /* Private */,
+       3,    0,   93,    2, 0x08,    2 /* Private */,
+       4,    0,   94,    2, 0x08,    3 /* Private */,
+       5,    0,   95,    2, 0x08,    4 /* Private */,
+       6,    0,   96,    2, 0x08,    5 /* Private */,
+       7,    0,   97,    2, 0x08,    6 /* Private */,
+       8,    1,   98,    2, 0x08,    7 /* Private */,
+      10,    0,  101,    2, 0x08,    9 /* Private */,
+      11,    0,  102,    2, 0x08,   10 /* Private */,
+      12,    0,  103,    2, 0x08,   11 /* Private */,
+      13,    0,  104,    2, 0x08,   12 /* Private */,
+      14,    1,  105,    2, 0x08,   13 /* Private */,
+      17,    0,  108,    2, 0x08,   15 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 5,    6,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   11,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,    9,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 15,   16,
     QMetaType::Void,
 
        0        // eod
@@ -104,13 +116,12 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
     qt_incomplete_metaTypeArray<qt_meta_tag_ZN10MainWindowE_t,
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<MainWindow, std::true_type>,
-        // method 'addNewNote'
+        // method 'saveNote'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'saveToCSV'
+        // method 'clearForm'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'loadNoteForEdit'
+        // method 'sortNotes'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<QListWidgetItem *, std::false_type>,
         // method 'deleteNote'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'addCategory'
@@ -120,9 +131,18 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         // method 'changeCategory'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        // method 'refreshNoteList'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'loadFromJson'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'saveToJson'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'changeTextColor'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'loadNoteForEdit'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QListWidgetItem *, std::false_type>,
+        // method 'exportNoteToDocx'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -133,15 +153,19 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     auto *_t = static_cast<MainWindow *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->addNewNote(); break;
-        case 1: _t->saveToCSV(); break;
-        case 2: _t->loadNoteForEdit((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 0: _t->saveNote(); break;
+        case 1: _t->clearForm(); break;
+        case 2: _t->sortNotes(); break;
         case 3: _t->deleteNote(); break;
         case 4: _t->addCategory(); break;
         case 5: _t->deleteCategory(); break;
         case 6: _t->changeCategory((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 7: _t->loadFromJson(); break;
-        case 8: _t->saveToJson(); break;
+        case 7: _t->refreshNoteList(); break;
+        case 8: _t->loadFromJson(); break;
+        case 9: _t->saveToJson(); break;
+        case 10: _t->changeTextColor(); break;
+        case 11: _t->loadNoteForEdit((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 12: _t->exportNoteToDocx(); break;
         default: ;
         }
     }
@@ -166,14 +190,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 13;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 13)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 9;
+        _id -= 13;
     }
     return _id;
 }

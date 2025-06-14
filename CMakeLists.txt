@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Поиск Qt с приоритетом Qt6
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core)  # Добавлен Core для работы с ресурсами
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 # Список исходных файлов
 set(PROJECT_SOURCES
@@ -40,7 +41,20 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(kurs
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ${RESOURCE_FILES}  # Добавлены ресурсы
+        ${RESOURCE_FILES}
+        notemanager.h notemanager.cpp
+        noteformatter.h noteformatter.cpp
+        note.h
+        noteexporter.h noteexporter.cpp
+        emojimenubuilder.h emojimenubuilder.cpp
+        recentlydeletedmanager.h recentlydeletedmanager.cpp
+        recentlydeletedwindow.h recentlydeletedwindow.cpp
+        recentlydeletedwindow.h recentlydeletedwindow.cpp
+        recentlydeletedwindow.cpp
+        recentlydeletedwindow.h
+        recentlydeletedwindow.h
+        noteitemdelegate.h noteitemdelegate.cpp
+        # Добавлены ресурсы
     )
 else()
     if(ANDROID)
@@ -61,7 +75,7 @@ target_link_libraries(kurs PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Core  # Добавлен Core для работы с ресурсами
 )
-
+target_link_libraries(kurs PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
 # Настройки для macOS
 if(${QT_VERSION} VERSION_LESS 6.1.0)
     set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.kurs)
