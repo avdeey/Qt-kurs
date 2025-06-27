@@ -12,9 +12,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Поиск Qt с приоритетом Qt6
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core)  # Добавлен Core для работы с ресурсами
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui Test)
+
 
 # Список исходных файлов
 set(PROJECT_SOURCES
@@ -22,61 +22,54 @@ set(PROJECT_SOURCES
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    notemanager.cpp
+    notemanager.h
+    noteformatter.cpp
+    noteformatter.h
+    noteexporter.cpp
+    noteexporter.h
+    emojimenubuilder.cpp
+    emojimenubuilder.h
+    recentlydeletedmanager.cpp
+    recentlydeletedmanager.h
+    recentlydeletedwindow.cpp
+    recentlydeletedwindow.h
+    noteitemdelegate.cpp
+    noteitemdelegate.h
+    note.h
 )
 
-# Список файлов ресурсов (.qrc)
-set(QRC_FILES
-    resources.qrc  # Добавьте другие .qrc файлы при необходимости
-)
+# Список файлов ресурсов
+set(QRC_FILES resources.qrc)
 
-# Обработка ресурсов в зависимости от версии Qt
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_resources(RESOURCE_FILES ${QRC_FILES})
 else()
     qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 endif()
 
-# Создание исполняемого файла
+# Создание основного GUI-приложения
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(kurs
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         ${RESOURCE_FILES}
-        notemanager.h notemanager.cpp
-        noteformatter.h noteformatter.cpp
-        note.h
-        noteexporter.h noteexporter.cpp
-        emojimenubuilder.h emojimenubuilder.cpp
-        recentlydeletedmanager.h recentlydeletedmanager.cpp
-        recentlydeletedwindow.h recentlydeletedwindow.cpp
-        recentlydeletedwindow.h recentlydeletedwindow.cpp
-        recentlydeletedwindow.cpp
-        recentlydeletedwindow.h
-        recentlydeletedwindow.h
-        noteitemdelegate.h noteitemdelegate.cpp
-        # Добавлены ресурсы
     )
 else()
     if(ANDROID)
-        add_library(kurs SHARED
-            ${PROJECT_SOURCES}
-            ${RESOURCE_FILES}  # Добавлены ресурсы
-        )
+        add_library(kurs SHARED ${PROJECT_SOURCES} ${RESOURCE_FILES})
     else()
-        add_executable(kurs
-            ${PROJECT_SOURCES}
-            ${RESOURCE_FILES}  # Добавлены ресурсы
-        )
+        add_executable(kurs ${PROJECT_SOURCES} ${RESOURCE_FILES})
     endif()
 endif()
 
-# Линковка с Qt компонентами
 target_link_libraries(kurs PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Core  # Добавлен Core для работы с ресурсами
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
 )
-target_link_libraries(kurs PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
-# Настройки для macOS
+
+# Настройки для macOS и Windows
 if(${QT_VERSION} VERSION_LESS 6.1.0)
     set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.kurs)
 endif()
@@ -97,10 +90,40 @@ install(TARGETS kurs
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Финализация для Qt6
+# Финализация (только для Qt6)
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(kurs)
 endif()
 
-# Вывод информации о используемой версии Qt (для отладки)
 message(STATUS "Building with Qt ${QT_VERSION_MAJOR}")
+
+# ====================
+# === ЮНИТ-ТЕСТЫ =====
+# ====================
+enable_testing()
+
+add_executable(test_manager
+    test_notemanager.cpp
+
+    notemanager.cpp
+    noteexporter.cpp
+    recentlydeletedmanager.cpp
+    mainwindow.cpp
+    noteformatter.cpp
+    emojimenubuilder.cpp
+    recentlydeletedwindow.cpp
+    noteitemdelegate.cpp
+
+    mainwindow.ui
+)
+
+
+target_link_libraries(test_manager
+    Qt${QT_VERSION_MAJOR}::Test
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Widgets
+)
+
+
+add_test(NAME NoteManagerTests COMMAND tests)

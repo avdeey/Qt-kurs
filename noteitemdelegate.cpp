@@ -38,7 +38,6 @@ void NoteItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     textOption.setWrapMode(QTextOption::WordWrap);
     painter->drawText(textRect, title, textOption);
 
-    // Полка на всю ширину виджета
     int row = index.row();
     int itemsPerRow = 4;
     int shelfHeight = 10;

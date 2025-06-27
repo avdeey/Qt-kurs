@@ -36,6 +36,9 @@ private slots:
     void exportNoteToOdt();
     void loadNoteForEdit(const QModelIndex &index);
     void restoreNoteToOriginalPosition(const QString &category, const Note &note);
+    void searchNotes(const QString &text);
+    void renameCategory();
+    void clearSelection();
 
 private:
     void refreshNoteList();
@@ -47,6 +50,8 @@ private:
     RecentlyDeletedManager deletedManager;
     QVector<int> visibleNoteIndexes;
     class RecentlyDeletedWindow *deletedWindow = nullptr;
+    QVector<int> searchResults;
+    bool sortAscending = true;
 };
 
 #endif // MAINWINDOW_H

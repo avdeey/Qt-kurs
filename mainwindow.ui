@@ -121,10 +121,21 @@ QToolButton#emojiButton::menu-indicator {
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="renameCategoryButton">
+        <property name="text">
+         <string>Изменить категорию</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QListView" name="noteListView"/>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="text">
+         <string>Поиск заметок...</string>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="actionButtonsLayout">

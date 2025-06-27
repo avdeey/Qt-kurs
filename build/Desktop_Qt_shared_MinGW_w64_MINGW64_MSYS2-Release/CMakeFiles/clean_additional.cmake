@@ -5,6 +5,9 @@ if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "Release")
   file(REMOVE_RECURSE
   "CMakeFiles\\kurs_autogen.dir\\AutogenUsed.txt"
   "CMakeFiles\\kurs_autogen.dir\\ParseCache.txt"
+  "CMakeFiles\\test_manager_autogen.dir\\AutogenUsed.txt"
+  "CMakeFiles\\test_manager_autogen.dir\\ParseCache.txt"
   "kurs_autogen"
+  "test_manager_autogen"
   )
 endif()

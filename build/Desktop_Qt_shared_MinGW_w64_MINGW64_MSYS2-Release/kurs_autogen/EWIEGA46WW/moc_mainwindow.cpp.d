@@ -3,6 +3,7 @@ C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Rele
   C:/Users/Admin/Desktop/kurs/Note.h \
   C:/Users/Admin/Desktop/kurs/NoteManager.h \
   C:/Users/Admin/Desktop/kurs/RecentlyDeletedManager.h \
+  C:/Users/Admin/Desktop/kurs/recentlydeletedmanager.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \

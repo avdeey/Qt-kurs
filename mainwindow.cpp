@@ -7,6 +7,13 @@
 #include "NoteItemDelegate.h"
 #include "RecentlyDeletedWindow.h"
 
+#include <QTemporaryDir>
+#include <QXmlStreamReader>
+#include <QBuffer>
+
+
+
+#include <QProcess>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -14,12 +21,14 @@
 #include <QColorDialog>
 #include <QStandardItemModel>
 #include <QTextDocumentWriter>
+#include <QDate>
+#include <QDebug>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+    : QMainWindow(parent), ui(new Ui::MainWindow), sortAscending(true) {
     ui->setupUi(this);
+
     model = new QStandardItemModel(this);
     ui->noteListView->setModel(model);
     ui->noteListView->setItemDelegate(new NoteItemDelegate(this));
@@ -47,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->recentlyDeletedButton, &QPushButton::clicked, this, [this]() {
         if (!deletedWindow) {
-            deletedWindow = new RecentlyDeletedWindow(&deletedManager, this);
+           deletedWindow = new RecentlyDeletedWindow(&deletedManager, &manager, this);
             connect(deletedWindow, &RecentlyDeletedWindow::noteRestored, this, [this](const QString &category, const Note &note) {
                 restoreNoteToOriginalPosition(category, note);
             });
@@ -64,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->insertImageButton, &QToolButton::clicked, this, &MainWindow::insertImage);
     connect(ui->exportOdtButton, &QPushButton::clicked, this, &MainWindow::exportNoteToOdt);
 
+
     connect(ui->boldButton, &QToolButton::clicked, this, [this]() {
         NoteFormatter::toggleBold(ui->noteText);
     });
@@ -71,6 +81,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->italicButton, &QToolButton::clicked, this, [this]() {
         NoteFormatter::toggleItalic(ui->noteText);
     });
+
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &MainWindow::searchNotes);
+    connect(ui->renameCategoryButton, &QPushButton::clicked, this, &MainWindow::renameCategory);
+    connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::clearForm);
 
     manager.loadFromJson("notes.json");
     for (const QString &category : manager.getCategories())
@@ -81,6 +95,20 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
     manager.saveToJson("notes.json");
     delete ui;
+}
+
+void MainWindow::refreshNoteList() {
+    model->clear();
+    QString category = ui->categoryBox->currentText();
+    const auto &notes = manager.getNotes(category);
+
+    for (const Note &note : notes) {
+        if (!note.isDeleted) {
+            auto *item = new QStandardItem(note.title);
+            item->setEditable(false);
+            model->appendRow(item);
+        }
+    }
 }
 
 void MainWindow::saveNote() {
@@ -95,117 +123,61 @@ void MainWindow::saveNote() {
         return;
     }
 
-    Note note = {title, date, text, color};
-    QModelIndex index = ui->noteListView->currentIndex();
-
-    if (index.isValid() && index.row() < visibleNoteIndexes.size()) {
-        int realIndex = visibleNoteIndexes[index.row()];
-        manager.updateNote(category, realIndex, note);
-    } else {
-        manager.addNote(category, note);
-    }
-
-    refreshNoteList();
-    clearForm();
-}
-
-
-void MainWindow::deleteNote() {
-    QModelIndex index = ui->noteListView->currentIndex();
-    if (!index.isValid() || index.row() >= visibleNoteIndexes.size()) return;
-
-    QString category = ui->categoryBox->currentText();
-    int realIndex = visibleNoteIndexes[index.row()];
-    Note note = manager.getNotes(category).value(realIndex);
-
-    note.isDeleted = true;
-    manager.updateNote(category, realIndex, note);
-
-    deletedManager.addDeletedNote(category, note, realIndex);
-
-    refreshNoteList();
-    clearForm();
-}
-
-void MainWindow::restoreNoteToOriginalPosition(const QString &category, const Note &note) {
-    auto &notes = manager.getNotes(category);
+    Note newNote = {title, date, text, color};
+    QVector<Note> &notes = manager.getNotes(category);
+    bool updated = false;
     for (int i = 0; i < notes.size(); ++i) {
-        if (notes[i].title == note.title && notes[i].isDeleted) {
-            manager.deleteNote(category, i);
+        if (notes[i].title == title && !notes[i].isDeleted) {
+            manager.updateNote(category, i, newNote);
+            updated = true;
             break;
         }
     }
-    Note restored = note;
-    restored.isDeleted = false;
-    manager.addNote(category, restored);
+    if (!updated) manager.addNote(category, newNote);
+
     refreshNoteList();
+    clearForm();
 }
 
-void MainWindow::addCategory() {
-    bool ok;
-    QString name = QInputDialog::getText(this, "Новая категория", "Название:", QLineEdit::Normal, "", &ok);
-    if (ok && !name.isEmpty()) {
-        if (name.length() > 20) {
-            QMessageBox::warning(this, "Ошибка", "Название категории не должно превышать 20 символов.");
-            return;
-        }
-        manager.addCategory(name);
-        ui->categoryBox->addItem(name);
-    }
-}
-
-void MainWindow::deleteCategory() {
-    QString category = ui->categoryBox->currentText();
-    manager.deleteCategory(category);
-    ui->categoryBox->removeItem(ui->categoryBox->currentIndex());
-    refreshNoteList();
-}
-
-void MainWindow::changeCategory(const QString &) {
-    refreshNoteList();
-}
-
-void MainWindow::refreshNoteList() {
-    model->clear();
-    visibleNoteIndexes.clear();
+void MainWindow::deleteNote() {
+    QModelIndex index = ui->noteListView->currentIndex();
+    if (!index.isValid()) return;
 
     QString category = ui->categoryBox->currentText();
-    const auto &notes = manager.getNotes(category);
-
+    QString selectedTitle = index.data().toString();
+    QVector<Note> &notes = manager.getNotes(category);
     for (int i = 0; i < notes.size(); ++i) {
-        if (!notes[i].isDeleted) {
-            auto *item = new QStandardItem(notes[i].title);
-            item->setEditable(false);
-            model->appendRow(item);
-            visibleNoteIndexes.append(i);
+        if (notes[i].title == selectedTitle && !notes[i].isDeleted) {
+            notes[i].isDeleted = true;
+            deletedManager.addDeletedNote(category, notes[i], i);
+            break;
         }
     }
-}
-
-void MainWindow::clearForm() {
-    ui->noteTitle->clear();
-    ui->noteText->clear();
-    ui->dateEdit->setDate(QDate::currentDate());
-    ui->noteListView->clearSelection();
+    refreshNoteList();
+    clearForm();
 }
 
 void MainWindow::loadNoteForEdit(const QModelIndex &index) {
-    if (!index.isValid() || index.row() >= visibleNoteIndexes.size()) return;
-
+    if (!index.isValid()) return;
     QString category = ui->categoryBox->currentText();
-    int realIndex = visibleNoteIndexes[index.row()];
-    Note note = manager.getNotes(category).value(realIndex);
-
-    ui->noteTitle->setText(note.title);
-    ui->dateEdit->setDate(QDate::fromString(note.date, "dd.MM.yyyy"));
-    ui->noteText->setHtml(note.text);
-    NoteFormatter::applyTextColor(ui->noteText, note.textColor);
+    QString selectedTitle = index.data().toString();
+    const auto &notes = manager.getNotes(category);
+    for (const Note &note : notes) {
+        if (note.title == selectedTitle && !note.isDeleted) {
+            ui->noteTitle->setText(note.title);
+            ui->dateEdit->setDate(QDate::fromString(note.date, "dd.MM.yyyy"));
+            ui->noteText->setHtml(note.text);
+            NoteFormatter::applyTextColor(ui->noteText, note.textColor);
+            break;
+        }
+    }
 }
 
 void MainWindow::sortNotes() {
     QString category = ui->categoryBox->currentText();
-    manager.sortNotesByDate(category);
+    manager.sortNotesByDate(category, sortAscending);
     refreshNoteList();
+    sortAscending = !sortAscending;
 }
 
 void MainWindow::changeTextColor() {
@@ -244,3 +216,114 @@ void MainWindow::exportNoteToOdt() {
         QMessageBox::critical(this, "Ошибка", "Не удалось сохранить файл.");
     }
 }
+
+
+void MainWindow::clearForm() {
+    ui->noteTitle->clear();
+    ui->noteText->clear();
+    ui->dateEdit->setDate(QDate::currentDate());
+    ui->noteListView->clearSelection();
+    NoteFormatter::resetTextColor(ui->noteText);
+    QTextCursor cursor = ui->noteText->textCursor();
+    QTextCharFormat format;
+    format.setFontWeight(QFont::Normal);
+    format.setFontItalic(false);
+    cursor.mergeCharFormat(format);
+}
+
+void MainWindow::addCategory() {
+    bool ok;
+    QString name = QInputDialog::getText(this, "Новая категория", "Название:", QLineEdit::Normal, "", &ok);
+    if (ok && !name.isEmpty()) {
+        if (name.length() > 20) {
+            QMessageBox::warning(this, "Ошибка", "Название категории не должно превышать 20 символов.");
+            return;
+        }
+        manager.addCategory(name);
+        ui->categoryBox->addItem(name);
+    }
+}
+
+void MainWindow::deleteCategory() {
+    QString category = ui->categoryBox->currentText();
+    manager.deleteCategory(category, deletedManager);
+    ui->categoryBox->removeItem(ui->categoryBox->currentIndex());
+    refreshNoteList();
+}
+
+void MainWindow::changeCategory(const QString &) {
+    ui->lineEdit->clear();
+    refreshNoteList();
+}
+
+void MainWindow::renameCategory() {
+    QString oldCategory = ui->categoryBox->currentText();
+    if (oldCategory.isEmpty()) return;
+
+    bool ok;
+    QString newCategory = QInputDialog::getText(this, "Изменить категорию",
+                                                "Новое название категории:",
+                                                QLineEdit::Normal, oldCategory, &ok);
+    if (!ok || newCategory.isEmpty() || newCategory == oldCategory)
+        return;
+    if (newCategory.length() > 20) {
+        QMessageBox::warning(this, "Ошибка", "Название категории не должно превышать 20 символов.");
+        return;
+    }
+    if (manager.getCategories().contains(newCategory)) {
+        QMessageBox::warning(this, "Ошибка", "Категория с таким названием уже существует.");
+        return;
+    }
+    manager.renameCategory(oldCategory, newCategory);
+    if (deletedWindow) {
+        deletedWindow->renameCategory(oldCategory, newCategory);
+    }
+    int index = ui->categoryBox->currentIndex();
+    ui->categoryBox->setItemText(index, newCategory);
+    refreshNoteList();
+}
+
+void MainWindow::searchNotes(const QString &text) {
+    model->clear();
+    QString category = ui->categoryBox->currentText();
+    const auto &notes = manager.getNotes(category);
+    for (const Note &note : notes) {
+        if (!note.isDeleted && note.title.contains(text, Qt::CaseInsensitive)) {
+            auto *item = new QStandardItem(note.title);
+            item->setEditable(false);
+            model->appendRow(item);
+        }
+    }
+}
+
+void MainWindow::restoreNoteToOriginalPosition(const QString &category, const Note &note) {
+    auto &notes = manager.getNotes(category);
+
+    // Удалим дубликаты перед восстановлением
+    for (int i = 0; i < notes.size(); ++i) {
+        if (notes[i].title == note.title) {
+            notes.removeAt(i);
+            break;
+        }
+    }
+
+    Note restored = note;
+    restored.isDeleted = false;
+    manager.addNote(category, restored);
+
+    if (ui->categoryBox->findText(category) == -1) {
+        ui->categoryBox->addItem(category);
+    }
+    ui->categoryBox->setCurrentText(category);
+    refreshNoteList();
+}
+
+
+void MainWindow::clearSelection() {
+    ui->noteListView->clearSelection();
+    ui->noteTitle->clear();
+    ui->noteText->clear();
+    ui->dateEdit->setDate(QDate::currentDate());
+    NoteFormatter::resetTextColor(ui->noteText);
+}
+

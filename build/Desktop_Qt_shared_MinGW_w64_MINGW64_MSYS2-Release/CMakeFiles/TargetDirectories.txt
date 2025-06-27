@@ -1,4 +1,6 @@
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/kurs.dir
+C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/test_manager.dir
+C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/test.dir
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/edit_cache.dir
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/rebuild_cache.dir
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/list_install_components.dir
@@ -7,3 +9,5 @@ C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Rele
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/install/strip.dir
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/kurs_autogen_timestamp_deps.dir
 C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/kurs_autogen.dir
+C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/test_manager_autogen_timestamp_deps.dir
+C:/Users/Admin/Desktop/kurs/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/test_manager_autogen.dir

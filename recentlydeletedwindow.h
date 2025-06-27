@@ -5,13 +5,16 @@
 #include <QListWidget>
 #include <QPushButton>
 #include "RecentlyDeletedManager.h"
+#include "NoteManager.h"
 
 class RecentlyDeletedWindow : public QDialog {
     Q_OBJECT
 
 public:
-    RecentlyDeletedWindow(RecentlyDeletedManager *manager, QWidget *parent = nullptr);
-    void populateList();  // делаем публичным для повторного вызова
+    RecentlyDeletedWindow(RecentlyDeletedManager *manager, NoteManager *noteManager, QWidget *parent = nullptr);
+
+    void populateList();
+    void renameCategory(const QString &oldName, const QString &newName);
 
 signals:
     void noteRestored(const QString &category, const Note &note);
@@ -25,6 +28,7 @@ private:
     QListWidget *listWidget;
     QPushButton *restoreButton;
     QPushButton *deleteButton;
+    NoteManager *noteManager;
 };
 
 #endif // RECENTLYDELETEDWINDOW_H

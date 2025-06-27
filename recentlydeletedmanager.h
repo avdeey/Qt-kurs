@@ -13,6 +13,8 @@ public:
     void deleteNote(int index);
     void clear();
     QVector<std::tuple<QString, Note, int>> getDeletedNotes() const;
+    void renameCategory(const QString &oldName, const QString &newName);
+
 
 private:
     QVector<std::tuple<QString, Note, int>> deletedNotes;

@@ -1,11 +1,12 @@
-
+#include "NoteManager.h"
 #include "RecentlyDeletedWindow.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMessageBox>
 
-RecentlyDeletedWindow::RecentlyDeletedWindow(RecentlyDeletedManager *manager, QWidget *parent)
-    : QDialog(parent), manager(manager)
+RecentlyDeletedWindow::RecentlyDeletedWindow(RecentlyDeletedManager *manager, NoteManager *noteManager, QWidget *parent)
+    : QDialog(parent), manager(manager), noteManager(noteManager)
+
 {
     setWindowTitle("Удалённые заметки");
     resize(400, 300);
@@ -29,6 +30,10 @@ RecentlyDeletedWindow::RecentlyDeletedWindow(RecentlyDeletedManager *manager, QW
     populateList();
 }
 
+void RecentlyDeletedWindow::renameCategory(const QString &oldName, const QString &newName) {
+    manager->renameCategory(oldName, newName);
+}
+
 void RecentlyDeletedWindow::populateList() {
     listWidget->clear();
     const auto &notes = manager->getDeletedNotes();
@@ -36,6 +41,8 @@ void RecentlyDeletedWindow::populateList() {
         listWidget->addItem(category + ": " + note.title);
     }
 }
+
+
 
 void RecentlyDeletedWindow::restoreSelected() {
     int index = listWidget->currentRow();
@@ -45,8 +52,14 @@ void RecentlyDeletedWindow::restoreSelected() {
     Note note;
     int originalIndex;
     manager->restoreNote(index, category, note, originalIndex);
-    emit noteRestored(category, note);
+    if (!noteManager->getCategories().contains(category)) {
+        noteManager->addCategory(category);
+    }
+
+    // Вставим заметку обратно
+    noteManager->getNotes(category).insert(originalIndex, note);
     populateList();
+    emit noteRestored(category, note);
 }
 
 void RecentlyDeletedWindow::deleteSelected() {

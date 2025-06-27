@@ -1,5 +1,14 @@
 #include "RecentlyDeletedManager.h"
 
+void RecentlyDeletedManager::renameCategory(const QString &oldName, const QString &newName) {
+    for (auto &[category, note, index] : deletedNotes) {
+        if (category == oldName) {
+            category = newName;
+        }
+    }
+}
+
+
 void RecentlyDeletedManager::addDeletedNote(const QString &category, const Note &note, int originalIndex) {
     deletedNotes.append({category, note, originalIndex});
 }

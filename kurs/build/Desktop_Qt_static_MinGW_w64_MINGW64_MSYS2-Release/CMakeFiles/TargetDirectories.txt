@@ -1,0 +1,9 @@
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/kurs.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/edit_cache.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/rebuild_cache.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/list_install_components.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/install.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/install/local.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/install/strip.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/kurs_autogen_timestamp_deps.dir
+C:/Users/1/Desktop/kurs/kurs/build/Desktop_Qt_static_MinGW_w64_MINGW64_MSYS2-Release/CMakeFiles/kurs_autogen.dir

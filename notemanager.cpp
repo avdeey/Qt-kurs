@@ -4,6 +4,13 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+void NoteManager::renameCategory(const QString &oldName, const QString &newName) {
+    if (categories.contains(oldName)) {
+        QVector<Note> notes = categories.take(oldName);
+        categories.insert(newName, notes);
+    }
+}
+
 void NoteManager::addNote(const QString &category, const Note &note) {
     categories[category].append(note);
 }
@@ -21,7 +28,7 @@ void NoteManager::deleteNote(const QString &category, int index) {
 }
 
 QVector<Note> &NoteManager::getNotes(const QString &category) {
-    return categories[category];  // <-- ССЫЛКА на вектор заметок
+    return categories[category];  //
 }
 
 QStringList NoteManager::getCategories() const {
@@ -34,18 +41,27 @@ void NoteManager::addCategory(const QString &category) {
     }
 }
 
-void NoteManager::deleteCategory(const QString &category) {
-    categories.remove(category);
+void NoteManager::deleteCategory(const QString &category, RecentlyDeletedManager &trashManager) {
+    if (categories.contains(category)) {
+        QVector<Note> &notes = categories[category];
+        for (int i = 0; i < notes.size(); ++i) {
+            trashManager.addDeletedNote(category, notes[i], i);
+        }
+        categories.remove(category);
+    }
 }
 
-void NoteManager::sortNotesByDate(const QString &category) {
+void NoteManager::sortNotesByDate(const QString &category, bool ascending) {
     if (categories.contains(category)) {
         std::sort(categories[category].begin(), categories[category].end(),
-                  [](const Note &a, const Note &b) {
-                      return QDate::fromString(a.date, "dd.MM.yyyy") < QDate::fromString(b.date, "dd.MM.yyyy");
+                  [ascending](const Note &a, const Note &b) {
+                      QDate da = QDate::fromString(a.date, "dd.MM.yyyy");
+                      QDate db = QDate::fromString(b.date, "dd.MM.yyyy");
+                      return ascending ? da < db : da > db;
                   });
     }
 }
+
 
 void NoteManager::loadFromJson(const QString &filePath) {
     QFile file(filePath);
