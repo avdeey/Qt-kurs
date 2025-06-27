@@ -21,8 +21,27 @@
    ```
 2. Откройте  проект в **Qt Creator**.
 3. Нажмите "Собрать и запустить" (Ctrl + R).
+## Структура проекта
+```text
+/DiaryApp
+├── CMakeLists.txt                 # Файл сборки
+├── main.cpp                      # Точка входа
+├── MainWindow.h / .cpp / .ui    # Главное окно и интерфейс
+├── Note.h                       # Модель заметки
+├── NoteManager.h / .cpp         # Управление заметками
+├── RecentlyDeletedManager.*     # Менеджер удалённых заметок
+├── RecentlyDeletedWindow.*      # Окно для корзины
+├── NoteFormatter.*              # Форматирование текста
+├── NoteExporter.*               # Экспорт в ODT
+├── EmojiMenuBuilder.*           # Эмодзи-меню
+├── NoteItemDelegate.*           # Отображение карточек заметок
+├── resources.qrc                # Ресурсы (иконки и т.п.)
+├── test_notemanager.cpp         #  ui-тесты
+└── README.md                    # Описание проекта
+```
+## Руководство пользователя
+https://github.com/avdeey/Qt-kurs/blob/15cc5e1a1de76bd696b4b8448e53c13646a26012/user_guide.md
 ## Авторы
 Авдеева Т.С. и Балахонова Е.А.
 Проект выполнен в рамках учебной практики по C++ с использованием QtWidgets.
-## Руководство пользователя
-https://github.com/avdeey/Qt-kurs/blob/15cc5e1a1de76bd696b4b8448e53c13646a26012/user_guide.md
+
