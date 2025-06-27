@@ -6,6 +6,9 @@
 - **Model**: `Note`, `NoteManager`, `RecentlyDeletedManager`
 - **View**: виджеты и окна Qt (на базе QtWidgets)
 - **Controller**: `MainWindow`, `RecentlyDeletedWindow`, взаимодействующие с моделью
+  
+![image](https://github.com/user-attachments/assets/b1ab1618-fd17-43b9-9d94-16e0f42957cb)
+
 ### Основные модули
 | Модуль       | Назначение                                                        |
 |--------------|-------------------------------------------------------------------|
@@ -18,15 +21,16 @@
 ---
 ## Диаграммы
 
+###  Use Case Diagram
+Диаграмма вариантов использования иллюстрирует основные действия, которые может выполнять пользователь в приложении «Дневник». 
+
+![image](https://github.com/user-attachments/assets/6b3b3b92-5ec3-4554-a1f3-fc62bd9feaa0)
+
 ### C4 – Диаграмма контейнеров
-Отражает архитектуру приложения: UI, менеджеры, сервисные модули, файловую систему.
-![image](https://github.com/user-attachments/assets/f22957b1-84d6-46f8-956d-e994e82eb5c4)
+![image](https://github.com/user-attachments/assets/c29d4b1c-3523-45ce-a637-53e1ca1ffba4)
 
 ###  UML Class Diagram
 Показывает классы, их атрибуты, методы, связи и множественность.
 ![image](https://github.com/user-attachments/assets/9b7c9875-8b3d-4ea1-936b-060772a78b1c)
 
-###  Use Case Diagram
-Диаграмма вариантов использования иллюстрирует основные действия, которые может выполнять пользователь в приложении «Дневник». 
 
----
